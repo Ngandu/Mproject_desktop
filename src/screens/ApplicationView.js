@@ -1,0 +1,124 @@
+import React, { useState, useEffect } from "react";
+import "./../index.css";
+import { observer } from "mobx-react-lite";
+import { useHistory } from "react-router-dom";
+
+import firebase from "firebase/app";
+import "firebase/auth";
+import "firebase/firestore";
+
+import VisaView from "./../components/visaView";
+import PassportView from "./../components/passportView";
+import BirthView from "./../components/birthView";
+
+const ApplicationView = observer(({ userstore, commonstore }) => {
+  const Application = commonstore.selectedApplication;
+  const [Payment, setPayment] = useState();
+  let history = useHistory();
+  console.log(Application);
+
+  async function getPayment() {
+    try {
+      const db = firebase.firestore();
+      const querySnapshot = await db
+        .collection("payments")
+        // .where("ApplicationId", "==", "bo3DkIU8KzhNzn7fNLig")
+        .where("ApplicationId", "==", `${Application.id}`)
+        .get();
+      let uuers = [];
+      querySnapshot.forEach((doc) => {
+        uuers.push(doc.data());
+      });
+      setPayment(uuers);
+      // return await db.collection("applications").get(id);
+    } catch (err) {
+      alert("There is something wrong!!!!");
+      console.log(err.message);
+    }
+  }
+
+  useEffect(() => {
+    console.log("Application View");
+    getPayment();
+  }, []);
+
+  return (
+    <>
+      <div classNameName="container mx-auto">
+        {/* <div classNameName="box-border h-32 w-32 p-4 border-4">
+          <p>Users</p>
+        </div> */}
+        {/* <div class="bg-white w-screen overflow-auto whitespace-no-wrap py-3 px-4 text-center">
+          <button
+            class="inline-block border border-teal-500 text-teal-500 rounded-full px-6 py-2 mr-4"
+            onClick={() => history.push("/Payments")}
+          >
+            View Payment
+          </button>
+          <button class="inline-block border border-teal-500 text-teal-500 rounded-full px-6 py-2 mr-4">
+            View Profile
+          </button>
+          <button class="inline-block border border-teal-500 text-teal-500 rounded-full px-6 py-2 mr-4">
+            View Appointment
+          </button>
+        </div> */}
+
+        {Payment && Payment.length === 0 ? (
+          <div class="alert flex flex-row items-center bg-red-200 p-5 rounded border-b-2 border-red-300">
+            <div class="alert-icon flex items-center bg-red-100 border-2 border-red-500 justify-center h-10 w-10 flex-shrink-0 rounded-full">
+              <span class="text-red-500">
+                <svg fill="currentColor" viewBox="0 0 20 20" class="h-6 w-6">
+                  <path
+                    fill-rule="evenodd"
+                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+              </span>
+            </div>
+            <div class="alert-content ml-4">
+              <div class="alert-title font-semibold text-lg text-red-800">
+                No Payment
+              </div>
+              <div class="alert-description text-sm text-red-600">
+                There is no payment for this application
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div class="alert flex flex-row items-center bg-green-200 p-5 rounded border-b-2 border-green-300">
+            <div class="alert-icon flex items-center bg-green-100 border-2 border-green-500 justify-center h-10 w-10 flex-shrink-0 rounded-full">
+              <span class="text-green-500">
+                <svg fill="currentColor" viewBox="0 0 20 20" class="h-6 w-6">
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+              </span>
+            </div>
+            <div class="alert-content ml-4">
+              <div class="alert-title font-semibold text-lg text-green-800">
+                Payment completed
+              </div>
+              <div class="alert-description text-sm text-green-600">
+                Applicant has already paid for this Application.
+              </div>
+            </div>
+          </div>
+        )}
+
+        {Application.applicationType === "Birth"
+          ? BirthView(Application)
+          : null}
+        {Application.applicationType === "Visa" ? VisaView(Application) : null}
+        {Application.applicationType === "Passport"
+          ? PassportView(Application)
+          : null}
+      </div>
+    </>
+  );
+});
+
+export default ApplicationView;
