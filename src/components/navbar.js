@@ -1,5 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHome } from "@fortawesome/fontawesome-free-solid";
 
 const Navbar = () => {
   return (
@@ -20,7 +22,7 @@ const Navbar = () => {
                   to="/"
                   className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >
-                  Dashboard
+                  <FontAwesomeIcon icon={faHome} /> Dashboard h
                 </Link>
                 <Link
                   to="/Users"
