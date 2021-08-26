@@ -6,6 +6,8 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
 
+import Subnav from "../components/subnav";
+
 const AppointmentView = observer(({ userstore, commonstore }) => {
   const Appointment = commonstore.selectedAppointment;
   const [User, setUser] = useState();
@@ -36,10 +38,11 @@ const AppointmentView = observer(({ userstore, commonstore }) => {
     getUser();
   }, []);
 
-  console.log(User[0]);
+  // console.log(User[0]);
 
   return (
     <>
+      <Subnav />
       <div classNameName="container mx-auto">
         {/* <div classNameName="box-border h-32 w-32 p-4 border-4">
           <p>Users</p>

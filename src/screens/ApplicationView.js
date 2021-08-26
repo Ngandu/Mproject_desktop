@@ -7,6 +7,8 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
 
+import Subnav from "../components/subnav";
+
 import VisaView from "./../components/visaView";
 import PassportView from "./../components/passportView";
 import BirthView from "./../components/birthView";
@@ -42,8 +44,45 @@ const ApplicationView = observer(({ userstore, commonstore }) => {
     getPayment();
   }, []);
 
+  const updateApplication = async () => {
+    let newStatus = "";
+    if (Application.status == "New") newStatus = "In Process";
+    if (Application.status == "In Process") newStatus = "Complete";
+    if (Application.status == "Complete") newStatus = "Collected";
+    if (Application.status == "Collected")
+      return alert("Application cannot be updated");
+
+    // Comfirm updating of application
+
+    // eslint-disable-next-line no-restricted-globals
+    let conf = confirm(`Are sure to update Application to ${newStatus}?`);
+    if (!conf) return;
+
+    let appli = Application;
+    let docId = appli.id;
+    appli.status = newStatus;
+
+    try {
+      const db = firebase.firestore();
+      const querySnapshot = await db
+        .collection("applications")
+        .doc(docId)
+        .update(appli);
+      console.log(querySnapshot);
+      alert("Updated successfully!");
+    } catch (err) {
+      alert("There is something wrong!!!!");
+      console.log(err);
+    }
+
+    // const update = updateApplication(docId, appli);
+
+    // console.log(update);
+  };
+
   return (
     <>
+      <Subnav />
       <div classNameName="container mx-auto">
         {/* <div classNameName="box-border h-32 w-32 p-4 border-4">
           <p>Users</p>
@@ -117,6 +156,12 @@ const ApplicationView = observer(({ userstore, commonstore }) => {
           ? PassportView(Application)
           : null}
       </div>
+      <button
+        className="z-30 fixed m-2 right-6 bottom-6 shadow-md bg-blue-500 text-white p-5 rounded-full"
+        onClick={() => updateApplication()}
+      >
+        Update Application
+      </button>
     </>
   );
 });
