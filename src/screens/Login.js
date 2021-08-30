@@ -36,12 +36,30 @@ const Login = observer(({ userstore }) => {
     if (!email) {
       alert("Email field is required.");
       setLoading(false);
+      return;
     } else if (!password) {
       alert("Password field is required.");
       setLoading(false);
-    } else {
-      signIn(email, password);
+      return;
     }
+
+    const db = firebase.firestore();
+    const userDetails = await db
+      .collection("users")
+      .where("email", "==", email)
+      .get();
+
+    userDetails.forEach((doc) => {
+      let dd = doc.data();
+      console.log(dd);
+
+      if (dd.type !== "admin") {
+        alert("user not permitted");
+        return;
+      } else {
+        signIn(email, password);
+      }
+    });
   };
 
   firebase.auth().onAuthStateChanged((user) => {
@@ -73,7 +91,7 @@ const Login = observer(({ userstore }) => {
                     placeholder="name@example.com"
                     autoComplete="off"
                     value={email}
-                    onChange={(text) => setEmail(text)}
+                    onChange={(text) => setEmail(text.target.value)}
                   />
                   <label
                     htmlFor="email"
@@ -90,7 +108,7 @@ const Login = observer(({ userstore }) => {
                     placeholder="password"
                     autoComplete="off"
                     value={password}
-                    onChange={(text) => setPassword(text)}
+                    onChange={(text) => setPassword(text.target.value)}
                   />
                   <label
                     htmlFor="password"

@@ -7,11 +7,15 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus, faTrash } from "@fortawesome/fontawesome-free-solid";
+
 const Notifications = observer(({ userstore, commonstore, props }) => {
   const [Notifications, setNotifications] = useState([]);
   let history = useHistory();
   // Get all the users
   async function getNotifications() {
+    console.log("getNotifications()");
     try {
       const db = firebase.firestore();
       const querySnapshot = await db.collection("notifications").get();
@@ -22,7 +26,7 @@ const Notifications = observer(({ userstore, commonstore, props }) => {
         uuers.push({ id: doc.id, ...doc.data() });
       });
       setNotifications(uuers);
-      //console.log(uuers);
+      console.log(uuers);
     } catch (err) {
       alert("There is something wrong!!!!");
       console.log(err.message);
@@ -36,36 +40,31 @@ const Notifications = observer(({ userstore, commonstore, props }) => {
 
   //console.log(Notifications);
 
-  function selectNotification(n) {
-    commonstore.setSelectedApplication(n);
-    history.push("/ApplicationView");
+  function addNotification() {
+    history.push("/NotificationNew");
   }
 
-  const renderList = () => {
-    // Notifications.map((notice, key) => {
-    //   return <p>Boom</p>;
-    // });
-    // for (let notice in Notifications) {
-    //   console.log(notice);
-    //   return <p>{notice.title}</p>;
-    // }
-
-    console.log(Notifications.length);
-
-    for (let i = 0; i < Notifications.length; i++) {
-      console.log(i);
-      return <p>{Notifications[i].title}</p>;
+  async function deleteNotice(id) {
+    // alert(id);
+    try {
+      const db = firebase.firestore();
+      db.collection("notifications").doc(id).delete();
+      alert("Notification deleted");
+      getNotifications();
+    } catch (err) {
+      alert("There is something wrong!!!!");
+      console.log(err.message);
     }
-  };
+  }
 
   return (
     <>
-      <div classNameName="container mx-auto">
+      <div className="container mx-auto">
         <div className="flex flex-col">
           <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
               <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-                {/* <table className="min-w-full divide-y divide-gray-200">
+                <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
                       <th
@@ -84,21 +83,71 @@ const Notifications = observer(({ userstore, commonstore, props }) => {
                         scope="col"
                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                       >
-                        Date
+                        Sent Date
                       </th>
-                      <th scope="col" className="relative px-6 py-3">
-                        <span className="sr-only">Edit</span>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Actions
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200"></tbody>
-                </table> */}
-                {renderList()}
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {Notifications &&
+                      Notifications.map((notice, key) => {
+                        let dd = notice.notedate.toDate().toDateString();
+                        return (
+                          <tr key={key}>
+                            <td
+                              scope="col"
+                              className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider"
+                            >
+                              <div className="text-sm text-gray-900">
+                                {notice.title}
+                              </div>
+                            </td>
+                            <td
+                              scope="col"
+                              className="px-6 py-3 text-left text-xs font-small text-gray-500 tracking-wider"
+                            >
+                              <div className="text-sm text-gray-900">
+                                {notice.notice}
+                              </div>
+                            </td>
+                            <td
+                              scope="col"
+                              className="px-6 py-3 text-left text-xs font-small text-gray-500 tracking-wider"
+                            >
+                              <div className="text-sm text-gray-900">{dd}</div>
+                            </td>
+                            <td
+                              scope="col"
+                              className="px-6 py-3 text-left text-xs font-small text-gray-500 tracking-wider"
+                            >
+                              <FontAwesomeIcon
+                                icon={faTrash}
+                                color="red"
+                                className="pointer"
+                                onClick={() => deleteNotice(notice.id)}
+                              />
+                            </td>
+                          </tr>
+                        );
+                      })}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
         </div>
       </div>
+      <button
+        className="z-30 fixed m-2 right-6 bottom-6 shadow-md bg-blue-500 text-white p-5 rounded-full"
+        onClick={() => addNotification()}
+      >
+        <FontAwesomeIcon icon={faPlus} /> New Notification
+      </button>
     </>
   );
 });
