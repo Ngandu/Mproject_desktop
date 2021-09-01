@@ -4,6 +4,15 @@ import { observer } from "mobx-react-lite";
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faHome,
+  faUsers,
+  faFile,
+  faClock,
+  faBell,
+  faNewspaper,
+} from "@fortawesome/fontawesome-free-solid";
 
 import logo from "./../img/icon.png";
 
@@ -21,6 +30,11 @@ import ApplicationView from "../screens/ApplicationView";
 import Appointment from "../screens/Appointment";
 import AppointmentView from "../screens/AppointmentView";
 import Payments from "../screens/Payments";
+import Notifications from "../screens/Notifications";
+import NotificationNew from "../screens/NotificationNew";
+import News from "../screens/News";
+import NewsNew from "../screens/NewsNew";
+import NewsView from "../screens/NewsView";
 
 // Mobx Screens
 const MHome = () => <Home userstore={UserStore}></Home>;
@@ -51,6 +65,28 @@ const MAppointmentView = () => (
 );
 const MPayments = () => (
   <Payments userstore={UserStore} commonstore={CommonStore}></Payments>
+);
+const MNotifications = () => (
+  <Notifications
+    userstore={UserStore}
+    commonstore={CommonStore}
+  ></Notifications>
+);
+const MNotificationNew = () => (
+  <NotificationNew
+    userstore={UserStore}
+    commonstore={CommonStore}
+  ></NotificationNew>
+);
+
+const MNews = () => (
+  <News userstore={UserStore} commonstore={CommonStore}></News>
+);
+const MNewsView = () => (
+  <NewsView userstore={UserStore} commonstore={CommonStore}></NewsView>
+);
+const MNewsNew = () => (
+  <NewsNew userstore={UserStore} commonstore={CommonStore}></NewsNew>
 );
 
 const Screens = observer(() => {
@@ -102,25 +138,37 @@ const Screens = observer(() => {
                           to="/"
                           className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                         >
-                          Dashboard
+                          <FontAwesomeIcon icon={faHome} /> Dashboard
                         </Link>
                         <Link
                           to="/users"
                           className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                         >
-                          Users
+                          <FontAwesomeIcon icon={faUsers} /> Users
                         </Link>
                         <Link
                           to="/Applications"
                           className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                         >
-                          Applications
+                          <FontAwesomeIcon icon={faFile} /> Applications
                         </Link>
                         <Link
                           to="/Appointment"
                           className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                         >
-                          Appointments
+                          <FontAwesomeIcon icon={faClock} /> Appointments
+                        </Link>
+                        <Link
+                          to="/Notifications"
+                          className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                        >
+                          <FontAwesomeIcon icon={faBell} /> Notifications
+                        </Link>
+                        <Link
+                          to="/News"
+                          className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                        >
+                          <FontAwesomeIcon icon={faNewspaper} /> News
                         </Link>
                         <Link
                           to=""
@@ -144,6 +192,11 @@ const Screens = observer(() => {
               <Route path="/Appointment" component={MAppointment} />
               <Route path="/AppointmentView" component={MAppointmentView} />
               <Route path="/Payments" component={MPayments} />
+              <Route path="/Notifications" component={MNotifications} />
+              <Route path="/NotificationNew" component={MNotificationNew} />
+              <Route path="/News" component={MNews} />
+              <Route path="/NewsView" component={MNewsView} />
+              <Route path="/NewsNew" component={MNewsNew} />
             </Switch>
           </>
         </Router>
