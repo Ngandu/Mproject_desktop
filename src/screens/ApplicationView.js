@@ -44,6 +44,12 @@ const ApplicationView = observer(({ userstore, commonstore }) => {
     getPayment();
   }, []);
 
+  const sendNotification = async (notice) => {
+    const db = firebase.firestore();
+    await db.collection("userNotifications").add(notice);
+    console.log("Update Notification sent.");
+  };
+
   const updateApplication = async () => {
     let newStatus = "";
     if (Application.status == "New") newStatus = "In Process";
@@ -69,6 +75,14 @@ const ApplicationView = observer(({ userstore, commonstore }) => {
         .doc(docId)
         .update(appli);
       console.log(querySnapshot);
+      let notice = {
+        userid: appli.userid,
+        message: `Your Application has been updated to ${newStatus}`,
+        read: "unread",
+        noticedate: new Date(),
+      };
+
+      sendNotification(notice);
       alert("Updated successfully!");
     } catch (err) {
       alert("There is something wrong!!!!");
