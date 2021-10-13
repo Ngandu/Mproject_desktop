@@ -17,7 +17,10 @@ const News = observer(({ userstore, commonstore, props }) => {
   async function getNews() {
     try {
       const db = firebase.firestore();
-      const querySnapshot = await db.collection("news").get();
+      const querySnapshot = await db
+        .collection("news")
+        .orderBy("newsDate", "desc")
+        .get();
       let uuers = [];
       querySnapshot.forEach((doc) => {
         //console.log(doc.id);

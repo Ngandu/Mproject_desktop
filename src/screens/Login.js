@@ -9,7 +9,7 @@ import "firebase/auth";
 const Login = observer(({ userstore }) => {
   const [loading, setLoading] = useState(false);
 
-  const [email, setEmail] = useState("pnganu@yahoo.com");
+  const [email, setEmail] = useState("pngandu@yahoo.com");
   const [password, setPassword] = useState("pass@word1");
 
   useEffect(() => {
