@@ -8,7 +8,7 @@ import "firebase/auth";
 import "firebase/firestore";
 
 const Users = observer(({ userstore, commonstore, props }) => {
-  const [UUsers, setUsers] = useState();
+  const [UUsers, setUsers] = useState([]);
   let history = useHistory();
   // Get all the users
   async function getUsers() {
@@ -34,6 +34,17 @@ const Users = observer(({ userstore, commonstore, props }) => {
     getUsers();
   }, []);
 
+  useEffect(() => {
+    let result = UUsers.reduce(function (r, a) {
+      r[a.nationality] = r[a.nationality] || [];
+      r[a.nationality].push(a);
+      return r;
+    }, Object.create(null));
+
+    console.log(result);
+    // console.log(UUsers);
+  }, [UUsers]);
+
   //console.log(UUsers);
 
   function selectuser(user) {
@@ -44,6 +55,31 @@ const Users = observer(({ userstore, commonstore, props }) => {
 
   return (
     <>
+      <nav className="bg-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">Users</div>
+              <div className="hidden md:block">
+                <div className="ml-10 flex items-baseline space-x-4">
+                  <div
+                    className="text-gray-700 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium cursor-pointer"
+                    onClick={() => history.push("/users")}
+                  >
+                    List
+                  </div>
+                  <div
+                    className="text-gray-700 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium cursor-pointer"
+                    onClick={() => history.push("/usersnationalities")}
+                  >
+                    Nationalities
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
       <div className="container mx-auto">
         {/* <div className="box-border h-32 w-32 p-4 border-4">
           <p>Users</p>

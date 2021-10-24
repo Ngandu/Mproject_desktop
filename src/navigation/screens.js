@@ -23,6 +23,7 @@ import CommonStore from "./../stores/CommonStore";
 // Screens
 import Home from "../screens/Home";
 import Users from "../screens/Users";
+import Usersnationalities from "../screens/Usersnationalities";
 import UserView from "../screens/UsersView";
 import Login from "../screens/Login";
 import Applications from "../screens/Applications";
@@ -41,6 +42,12 @@ const MHome = () => <Home userstore={UserStore}></Home>;
 const MLogin = () => <Login userstore={UserStore}></Login>;
 const MUsers = () => (
   <Users userstore={UserStore} commonstore={CommonStore}></Users>
+);
+const MUsersnationalities = () => (
+  <Usersnationalities
+    userstore={UserStore}
+    commonstore={CommonStore}
+  ></Usersnationalities>
 );
 const MUserView = () => (
   <UserView userstore={UserStore} commonstore={CommonStore}></UserView>
@@ -186,6 +193,10 @@ const Screens = observer(() => {
             <Switch>
               <Route path="/" exact component={MHome} />
               <Route path="/users" component={MUsers} />
+              <Route
+                path="/usersnationalities"
+                component={MUsersnationalities}
+              />
               <Route path="/usersview" component={MUserView} />
               <Route path="/Applications" component={MApplications} />
               <Route path="/ApplicationView" component={MApplicationView} />
