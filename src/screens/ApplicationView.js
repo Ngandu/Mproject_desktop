@@ -4,8 +4,9 @@ import { observer } from "mobx-react-lite";
 import { useHistory } from "react-router-dom";
 
 import firebase from "firebase/app";
-import "firebase/auth";
+import "firebase/storage";
 import "firebase/firestore";
+import axios from "axios";
 
 import Subnav from "../components/subnav";
 
@@ -16,6 +17,8 @@ import BirthView from "./../components/birthView";
 const ApplicationView = observer(({ userstore, commonstore }) => {
   const Application = commonstore.selectedApplication;
   const [Payment, setPayment] = useState();
+  const [photoUrl, setPhotoUrl] = useState(null);
+
   let history = useHistory();
   console.log(Application);
 
@@ -39,9 +42,21 @@ const ApplicationView = observer(({ userstore, commonstore }) => {
     }
   }
 
+  const getPhoto = async (id) => {
+    console.log("getPhoto()");
+    const token = await axios.get(
+      `https://firebasestorage.googleapis.com/v0/b/mproject-802df.appspot.com/o/photos%2F${id}`
+    );
+
+    let finalUrl = `https://firebasestorage.googleapis.com/v0/b/mproject-802df.appspot.com/o/photos%2F${id}?alt=media&token=${token.data.downloadTokens}`;
+    // console.log("finalUrl", finalUrl);
+    setPhotoUrl(finalUrl);
+  };
+
   useEffect(() => {
     console.log("Application View");
     getPayment();
+    getPhoto(Application.id);
   }, []);
 
   const sendNotification = async (notice) => {
@@ -163,11 +178,13 @@ const ApplicationView = observer(({ userstore, commonstore }) => {
         )}
 
         {Application.applicationType === "Birth"
-          ? BirthView(Application)
+          ? BirthView(Application, photoUrl)
           : null}
-        {Application.applicationType === "Visa" ? VisaView(Application) : null}
+        {Application.applicationType === "Visa"
+          ? VisaView(Application, photoUrl)
+          : null}
         {Application.applicationType === "Passport"
-          ? PassportView(Application)
+          ? PassportView(Application, photoUrl)
           : null}
       </div>
       <button

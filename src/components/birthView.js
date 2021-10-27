@@ -1,4 +1,5 @@
-export default function BirthView(Application) {
+export default function BirthView(Application, photoUrl) {
+  console.log("photoUrl", photoUrl);
   return (
     <div className="bg-white shadow overflow-hidden sm:rounded-lg">
       <div className="px-4 py-5 sm:px-6">
@@ -10,6 +11,11 @@ export default function BirthView(Application) {
           <br />
           Status: {Application.status}
         </p>
+      </div>
+      <div className="px-4 py-5 sm:px-6">
+        <h3 className="text-lg leading-6 font-medium text-gray-900">
+          <img src={photoUrl} width="300" />
+        </h3>
       </div>
       <div className="border-t border-gray-200">
         <dl>
